@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos."> -->
+  <meta name="keywords" content="Autonomous Driving, 4D Scene Generation, Neural Rendering, Video Diffusion Models, Generative AI, NVIDIA">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DreamDrive</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">DreamDrive: Driving Everywhere in a Generative 4D World</h1>
+          <div class="is-size-5 publication-authors">
+            <!-- <span class="author-block">
+              <a href="">Author List</a><sup>1</sup>,</span> -->
+            <span class="author-block">
+              <a href="https://pointscoder.github.io/">Jiageng Mao</a><sup>1,2</sup>,</span>
+            <span class="author-block">
+              <a href="https://sites.google.com/site/boyilics/home">Boyi Li</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://www.borisivanovic.com/">Boris Ivanovic</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://research.nvidia.com/person/yuxiao-chen">Yuxiao Chen</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.cs.cornell.edu/~yanwang/">Yan Wang</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://yurongyou.com/">Yurong You</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://xiaocw11.github.io/">Chaowei Xiao</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://faculty.cc.gatech.edu/~danfei/">Danfei Xu</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://web.stanford.edu/~pavone/index.html">Marco Pavone</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://yuewang.xyz/">Yue Wang</a><sup>1,2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <!-- <span class="author-block"><sup>1</sup>University of Washington,</span> -->
+            <!-- <span class="author-block"><sup>2</sup>Google Research</span> -->
+            <span class="author-block"><sup>1</sup>NVIDIA Research,</span>
+            <span class="author-block"><sup>2</sup>University of Southern California</span>
+            <!-- <span class="author-block"><sup>3</sup>Toyota Research Institute</span> -->
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2412.14172"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2412.14172"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/PointsCoder"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <!-- <span class="link-block">
+                <a href="https://huggingface.co/collections/USC-GVL/universal-humanoid-10-6760c242f3591a933560a23a"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Humanoid-X</span>
+                </a>
+              </span> -->
+              <!-- Data Viewer. -->
+              <!-- <span class="link-block">
+                <a href="explorer.html" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fa fa-desktop"></i>
+                  </span>
+                  <span>Data Viewer</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Paper video. -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" controls autoplay muted loop height="100%">
+        <source src="./static/videos/video_demo.mp4"
+                type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+<!--/ Paper video. -->
+
+<!-- Abstract. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Synthesizing photo-realistic visual observations from an ego vehicle's driving trajectory is a critical step towards scalable training of self-driving models. 
+            Reconstruction-based methods create 3D scenes from driving logs and synthesize geometry-consistent driving videos through neural rendering, 
+            but their dependence on costly object annotations limits their ability to generalize to in-the-wild driving scenarios. 
+            On the other hand, generative models can synthesize action-conditioned driving videos in a more generalizable way but often struggle with maintaining 3D visual consistency. 
+          </p>
+          <p>
+            In this paper, we present DreamDrive, a 4D spatial-temporal scene generation approach that combines the merits of generation and reconstruction, 
+            to synthesize generalizable 4D driving scenes and dynamic driving videos with 3D consistency. 
+            Specifically, we leverage the generative power of video diffusion models to synthesize a sequence of visual references and further elevate them to 4D with a novel hybrid Gaussian representation. 
+            Given a driving trajectory, we then render 3D-consistent driving videos via Gaussian splatting. 
+            The use of generative priors allows our method to produce high-quality 4D scenes from in-the-wild driving data, while neural rendering ensures 3D-consistent video generation from the 4D scenes.   
+            Extensive experiments demonstrate that DreamDrive can generate controllable and generalizable 4D driving scenes, 
+            synthesize novel views of driving videos with high fidelity and 3D consistency, decompose static and dynamic elements in a self-supervised manner, and enhance perception and planning tasks for autonomous driving. 
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+<!-- / Abstract. -->
+
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+
+    <!-- Head -->
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-3">Driving Everywhere in a Generative 4D World</h2>
+    </div>
+    <!--/ Head -->
+    </br>
+
+    <!-- Row -->
+    <div class="columns is-centered">
+      <div class="column is-half has-text-centered">
+        <h3 class="title is-5">From Street View Images to 4D Scenes</h3>
+        <img src="./static/gifs/everywhere.gif" alt="4dscene" />
+      </div>
+      <div class="column is-half has-text-centered">
+        <h3 class="title is-5">Dynamic Video Synthesis via Neural Rendering</h3>
+        <img src="./static/gifs/novelview.gif" alt="nvs" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<!-- DreamDrive -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Header. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">DreamDrive</h2>
+      </div>
+    </div>
+    <!--/ Header. -->
+
+    <!-- Method. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <!-- <h2 class="title is-3">Pipeline</h2> -->
+
+        <div class="column is-full has-text-centered">
+          <img src="./static/images/teaser_img-1.png"
+               style="width: 100%; height: auto;"
+               alt="teaser image."/>
+        </div>
+
+        <!-- Model Architecture. -->
+        <div class="content has-text-justified">
+          <p>
+            DreamDrive tackles the challenge of synthesizing both generalizable and 3D-consistent visual observations. 
+            It enables scalable 4D scene generation directly from in-the-wild data without relying on costly data collection and annotations, 
+            making it a transformative step for training and testing autonomous driving systems in diverse real-world scenarios.
+          </p>
+        </div>
+
+        <div class="column is-full has-text-centered">
+          <img src="./static/images/method_img-1.png"
+               style="width: 100%; height: auto;"
+               alt="method image."/>
+        </div>
+
+        <!-- Model Architecture. -->
+        <div class="content has-text-justified">
+          <p>
+            DreamDrive combines video diffusion models with 3D Gaussian splatting to elevate visual references into fully dynamic 4D scenes. 
+            A novel hybrid Gaussian representation ensures consistent modeling of static and dynamic elements, creating realistic, trajectory-conditioned driving videos.
+          </p>
+        </div>
+
+      </div>
+    </div>
+    <!--/ Method. -->
+  </div>
+</section>
+<!--/ DreamDrive. -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Header. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-4">From Street View Images to 4D Spatio-Temporal Driving Scenes</h2>
+      </div>
+    </div>
+    <!--/ Header. -->
+
+    <!-- Method. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <!-- <h2 class="title is-3">Pipeline</h2> -->
+
+        <div class="column is-full has-text-centered">
+          <img src="./static/images/generalize_demo.png"
+               style="width: 100%; height: auto;"
+               alt="Humanoid-X pipeline image."/>
+        </div>
+      </div>
+    </div>
+    <!--/ Method. -->
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+
+    <!-- Row 1 -->
+    <div class="columns is-centered">
+      <div class="column is-half has-text-centered">
+        <h3 class="title is-4">Video Generation vs. 4D Generation</h3>
+        <img src="./static/images/videogen_img-1.png" alt="Video Generation vs. 4D Generation" />
+      </div>
+      <!-- <div class="column is-half has-text-centered">
+        <h3 class="title is-4">Comparison with 4D-GS</h3>
+        <img src="./static/images/deform_img-1.png" alt="Comparison with 4D-GS" />
+      </div> -->
+      <div class="column is-half has-text-centered">
+        <h3 class="title is-4">Motion Planning Support</h3>
+        <img src="./static/images/planning_img-1.png" alt="Motion Planning Support" />
+      </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="columns is-centered">
+      <div class="column is-half has-text-centered">
+        <h3 class="title is-4">Scene Decomposition</h3>
+        <img src="./static/images/dynamic_img-1.png" alt="Scene Decomposition" />
+      </div>
+      <div class="column is-half has-text-centered">
+        <h3 class="title is-4">Comparison with 4D-GS</h3>
+        <img src="./static/images/deform_img-1.png" alt="Comparison with 4D-GS" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Citation. -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{dreamdrive,
+  author    = {Mao, Jiageng and Li, Boyi and Ivanovic, Boris and Chen, Yuxiao and Wang, Yan and You, Yurong and Xiao, Chaowei and Xu, Danfei and Pavone, Marco and Wang, Yue},
+  title     = {DreamDrive: Driving Everywhere in a Generative 4D World},
+  journal   = {arXiv preprint arXiv:2412.14172},
+  year      = {2024},
+}</code></pre>
+  </div>
+</section>
+<!--/ Citation. -->
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>. Template was borrowed from <a
+            href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./static/js/lazyload-video.js"></script>
+
+</body>
+</html>
